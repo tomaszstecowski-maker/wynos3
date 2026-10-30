@@ -76,8 +76,8 @@ jobs:
       - name: Plik ipa na galezi ipa
         run: |
           set -e
-          V=$(grep -m1 'MARKETING_VERSION' ios/project.yml | sed 's/[^0-9.]//g')
-          B=$(grep -m1 'CURRENT_PROJECT_VERSION' ios/project.yml | sed 's/[^0-9]//g')
+          V=$(grep -m1 'MARKETING_VERSION:' ios/project.yml | sed 's/[^0-9.]//g')
+          B=$(grep -m1 'CURRENT_PROJECT_VERSION:' ios/project.yml | sed 's/[^0-9]//g')
           mkdir -p /tmp/out && cp ios/WynOs.ipa /tmp/out/WynOs.ipa
           cd /tmp/out
           git init -q -b ipa
