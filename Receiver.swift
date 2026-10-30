@@ -248,6 +248,7 @@ final class Session {
     private var nonceMe = Data()
     private var noncePC = Data()
     private var file: Incoming?
+    private var sinkLeft: Int64 = 0          // test prędkości komputer → iPhone: dane odbierane i od razu wyrzucane
     private var closed = false
     private var counted = false
     private var accepted = false
@@ -379,6 +380,15 @@ final class Session {
     private func process() {
         defer { compact() }
         while !closed {
+            if sinkLeft > 0 {
+                if available == 0 { return }
+                let n = Int(min(Int64(available), sinkLeft))
+                pos += n
+                sinkLeft -= Int64(n)
+                lastActivity = Date()
+                if sinkLeft == 0 { send(["t": "sunk"]) }
+                continue
+            }
             if var f = file {
                 if available == 0 { return }
                 let n = Int(min(Int64(available), f.remaining))
@@ -466,6 +476,11 @@ final class Session {
             }
         case "speedtest":
             sendSpeedTest((m["bytes"] as? NSNumber)?.intValue ?? 8 * 1024 * 1024)
+        case "sink":
+            // komputer zaraz wyśle tyle bajtów próbnych danych – nic nie jest zapisywane
+            let n = (m["size"] as? NSNumber)?.int64Value ?? 0
+            guard n > 0, n <= 64 * 1024 * 1024, file == nil else { close(); return }
+            sinkLeft = n
         case "icloudtest":
             let secs = min(max((m["seconds"] as? NSNumber)?.doubleValue ?? 15, 3), 30)
             exporter.cloudSpeed(seconds: secs, onWifi: model.shared.onWifi, cancel: cancel) { [weak self] r in
@@ -543,7 +558,7 @@ final class Session {
     private func fullHello() -> [String: Any] {
         let settings = model.shared
         return ["t": "hello",
-                "v": 3,
+                "v": 4,
                 "secure": true,
                 "name": settings.name,
                 "ask": settings.ask,
@@ -591,7 +606,7 @@ final class Session {
         }
         noncePC = n
         // niesparowany komputer w sieci dostaje tylko nazwę (do listy urządzeń)
-        send(["t": "hello", "v": 3, "secure": true, "name": model.shared.name, "model": model.device.model,
+        send(["t": "hello", "v": 4, "secure": true, "name": model.shared.name, "model": model.device.model,
               "device": model.device.installID, "paired": PairStore.key(for: pcID) != nil,
               "nonce": nonceMe.base64EncodedString()])
     }

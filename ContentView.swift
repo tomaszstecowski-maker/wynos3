@@ -219,21 +219,22 @@ struct ContentView: View {
     /// Komputer skanuje bibliotekę: lista zdjęć i filmów, potem miniatury do podglądu. Nic nie jest jeszcze kopiowane.
     private var scanHero: some View {
         let listing = model.scanTotal == 0 || model.scanListed < model.scanTotal
+        // podgląd (miniatury) idzie po cichu w tle – tu tylko odczyt listy
         let frac: Double = listing
             ? (model.scanTotal > 0 ? Double(model.scanListed) / Double(model.scanTotal) : 0)
-            : Double(min(model.thumbsSent, model.scanTotal)) / Double(max(1, model.scanTotal))
-        let big = listing ? (model.scanTotal > 0 ? number(model.scanListed) : "…") : number(min(model.thumbsSent, model.scanTotal))
+            : 1
+        let big = listing ? (model.scanTotal > 0 ? number(model.scanListed) : "…") : number(model.scanTotal)
         let small = model.scanTotal > 0 ? T("z {n}", "of {n}", ["n": number(model.scanTotal)]) : T("przeglądam…", "reading…")
         return VStack(spacing: 8) {
             RingView(progress: frac, big: big, small: small)
-            Text(listing ? T("Skanuję bibliotekę", "Scanning the library") : T("Wysyłam podgląd", "Sending previews"))
+            Text(listing ? T("Skanuję bibliotekę", "Scanning the library") : T("Biblioteka odczytana", "Library read"))
                 .font(.title3.weight(.semibold)).padding(.top, 6)
             Text(peerLine).font(.subheadline).foregroundColor(.secondary)
             Text(listing
                  ? T("Komputer odczytuje listę zdjęć i filmów. Nic nie jest jeszcze kopiowane.",
                      "The computer is reading the list of photos and videos. Nothing is copied yet.")
-                 : T("Małe miniatury do wyboru zdjęć na komputerze. Oryginały nie są wysyłane.",
-                     "Small thumbnails for choosing photos on the computer. Originals are not sent."))
+                 : T("Wybierz na komputerze, co skopiować. Zostaw WynOs otwarty.",
+                     "Choose on the computer what to copy. Keep WynOs open."))
                 .font(.caption)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
