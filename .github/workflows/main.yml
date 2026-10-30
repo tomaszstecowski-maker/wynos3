@@ -6,6 +6,10 @@ name: Zbuduj WynOs (iPhone)
 on:
   workflow_dispatch:
   push:
+    branches-ignore: [ipa]
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -67,3 +71,19 @@ jobs:
         with:
           name: WynOs-ipa
           path: ios/WynOs.ipa
+
+      # gotowy plik także na gałęzi „ipa” (łatwe pobranie: GitHub → gałąź ipa → WynOs.ipa → Download)
+      - name: Plik ipa na galezi ipa
+        run: |
+          set -e
+          V=$(grep -m1 'MARKETING_VERSION' ios/project.yml | sed 's/[^0-9.]//g')
+          B=$(grep -m1 'CURRENT_PROJECT_VERSION' ios/project.yml | sed 's/[^0-9]//g')
+          mkdir -p /tmp/out && cp ios/WynOs.ipa /tmp/out/WynOs.ipa
+          cd /tmp/out
+          git init -q -b ipa
+          git config user.name "WynOs build"
+          git config user.email "build@users.noreply.github.com"
+          echo "WynOs $V ($B) – ${GITHUB_SHA::7}" > WERSJA.txt
+          git add WynOs.ipa WERSJA.txt
+          git commit -qm "WynOs $V ($B) – ${GITHUB_SHA::7}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" ipa
