@@ -180,6 +180,7 @@ final class AppModel: ObservableObject {
     @Published var receiveTotalBytes: Int64 = 0
     @Published var albumName = ""
     var pulls = 0                               // ile połączeń komputera ma zgodę na kopię
+    @Published var refreshedAt: Date? = nil
     @Published var scanning = false             // komputer skanuje bibliotekę (lista + miniatury), nic jeszcze nie kopiuje
     @Published var scanListed = 0
     @Published var scanTotal = 0
@@ -304,6 +305,16 @@ final class AppModel: ObservableObject {
 
     func refreshPairs() {
         pairs = PairStore.all()
+    }
+
+    /// Przycisk „Odśwież połączenie”: nowy nasłuch i ogłoszenie Bonjour, aktualny adres Wi-Fi i lista par.
+    /// Gdy nic nie jest przesyłane, zamyka też stare połączenia (np. z poprzedniego komputera).
+    func refreshConnection() {
+        wifiAddress = AppModel.currentWifiAddress()
+        pairs = PairStore.all()
+        lastError = ""
+        receiver?.restart(closeAll: !pulling && !scanning && phase != .receiving)
+        refreshedAt = Date()
     }
 
     func forget(_ pair: PairStore.Pair) {

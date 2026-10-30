@@ -27,13 +27,13 @@ targets:
           - _wynos._tcp
         NSLocalNetworkUsageDescription: "WynOs łączy się przez Wi-Fi tylko z Twoim komputerem, sparowanym wcześniej kablem (połączenie szyfrowane). / WynOs connects over Wi-Fi only to your own computer, paired earlier with a cable (encrypted connection)."
         NSPhotoLibraryAddUsageDescription: "WynOs zapisuje w Zdjęciach pliki, które wysyłasz z własnego komputera (np. zdjęcia z aparatu). / WynOs saves to Photos the files you send from your own computer (e.g. photos from a camera)."
-        NSPhotoLibraryUsageDescription: "WynOs potrzebuje dostępu do Zdjęć, aby na Twoją prośbę skopiować oryginały zdjęć i filmów na Twój komputer oraz dodać odebrane pliki do wybranego albumu. Nic nie jest wysyłane do internetu. / WynOs needs Photos access to copy your original photos and videos to your computer when you ask, and to add received files to the chosen album. Nothing is sent to the internet."
+        NSPhotoLibraryUsageDescription: "WynOs potrzebuje dostępu do Zdjęć, aby na Twoją prośbę skopiować oryginały zdjęć i filmów na Twój komputer, dodać odebrane pliki do wybranego albumu oraz – tylko po Twoim potwierdzeniu – usunąć oryginały, które masz już w kopii. Nic nie jest wysyłane do internetu. / WynOs needs Photos access to copy your original photos and videos to your computer when you ask, to add received files to the chosen album and – only after you confirm – to delete originals you already have backed up. Nothing is sent to the internet."
     settings:
       base:
         PRODUCT_NAME: WynOs
         PRODUCT_BUNDLE_IDENTIFIER: pl.tomstec.wynos
-        MARKETING_VERSION: "3.3"
-        CURRENT_PROJECT_VERSION: "4"
+        MARKETING_VERSION: "3.5"
+        CURRENT_PROJECT_VERSION: "6"
         SWIFT_VERSION: "5.0"
         SWIFT_STRICT_CONCURRENCY: minimal
         TARGETED_DEVICE_FAMILY: "1"

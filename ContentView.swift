@@ -380,12 +380,25 @@ struct ContentView: View {
                         Label(T("Usuń", "Remove"), systemImage: "trash")
                     }
                 }
+                .contextMenu {
+                    Button(role: .destructive) { model.forget(pair) } label: {
+                        Label(T("Usuń", "Remove"), systemImage: "trash")
+                    }
+                }
+            }
+            Button(action: { model.refreshConnection() }) {
+                Label(T("Odśwież połączenie", "Refresh connection"), systemImage: "arrow.clockwise")
+            }
+            if let t = model.refreshedAt, Date().timeIntervalSince(t) < 60 {
+                Text(T("Odświeżono – na komputerze kliknij „Odśwież” w „Dostępne urządzenia”.",
+                       "Refreshed – on the computer click “Refresh” in “Available devices”."))
+                    .font(.footnote).foregroundColor(.secondary)
             }
         } header: {
             Text(T("Sparowane komputery", "Paired computers"))
         } footer: {
-            Text(T("Przez Wi-Fi łączą się tylko komputery sparowane raz przez kabel. Połączenie jest szyfrowane. Przesuń w lewo, aby usunąć.",
-                   "Only computers paired once over the cable can connect over Wi-Fi. The connection is encrypted. Swipe left to remove."))
+            Text(T("Przez Wi-Fi łączą się tylko komputery sparowane raz przez kabel. Połączenie jest szyfrowane. Przesuń w lewo, aby usunąć. Nowy komputer? Podłącz kabel, odblokuj iPhone'a i stuknij „Ufaj”, potem na komputerze „Sparuj”.",
+                   "Only computers paired once over the cable can connect over Wi-Fi. The connection is encrypted. Swipe left to remove. New computer? Connect the cable, unlock the iPhone and tap “Trust”, then “Pair” on the computer."))
         }
     }
 

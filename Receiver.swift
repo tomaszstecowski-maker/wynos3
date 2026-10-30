@@ -63,6 +63,17 @@ final class Receiver {
         }
     }
 
+    /// „Odśwież połączenie”: nasłuch i ogłoszenie w sieci od nowa, zerwane / wiszące połączenia zamykane.
+    func restart(closeAll: Bool) {
+        queue.async {
+            self.listener?.cancel()
+            self.listener = nil
+            self.authFailures.removeAll()
+            if closeAll { for s in self.sessions.values { s.closeFromOutside() } }
+            self.queue.asyncAfter(deadline: .now() + 0.4) { self.startOnQueue() }
+        }
+    }
+
     func stopPulls() {
         forgetPulls()                     // „Zatrzymaj” na telefonie = następnym razem znów zapytaj
         queue.async { for s in self.sessions.values { s.stopPull() } }
